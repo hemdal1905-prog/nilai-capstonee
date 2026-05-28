@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Tambah Nilai{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="page-eyebrow"><a href="{{ url_for('dosen_nilai') }}">← Manajemen Nilai</a></p>
+    <h1 class="page-title">Tambah Nilai</h1>
+  </div>
+</div>
+
+<div class="form-card">
+  <form method="POST" action="{{ url_for('tambah_nilai') }}">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Mahasiswa</label>
+        <select name="mahasiswa_id" class="form-input" required>
+          <option value="">— Pilih Mahasiswa —</option>
+          {% for mhs in mahasiswa_list %}
+            <option value="{{ mhs.id }}">{{ mhs.nama }} ({{ mhs.nim_nip }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mata Kuliah</label>
+        <select name="matkul_id" class="form-input" required>
+          <option value="">— Pilih Mata Kuliah —</option>
+          {% for mk in matkul_list %}
+            <option value="{{ mk.id }}">{{ mk.kode }} — {{ mk.nama }} ({{ mk.sks }} SKS)</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Nilai Angka (0–100)</label>
+        <input type="number" name="nilai_angka" class="form-input" min="0" max="100" step="0.5"
+               placeholder="Contoh: 85" id="nilaiInput" oninput="updatePreview()" required>
+        <div class="nilai-preview" id="nilaiPreview"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Semester</label>
+        <select name="semester" class="form-input" required>
+          <option value="">— Pilih Semester —</option>
+          <option value="Ganjil">Ganjil</option>
+          <option value="Genap">Genap</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tahun Ajaran</label>
+        <select name="tahun_ajaran" class="form-input" required>
+          <option value="">— Pilih Tahun —</option>
+          <option value="2024/2025">2024/2025</option>
+          <option value="2023/2024">2023/2024</option>
+          <option value="2022/2023">2022/2023</option>
+        </select>
+      </div>
+      <div class="form-group"></div>
+    </div>
+
+    <!-- Konversi tabel -->
+    <div class="grade-ref">
+      <p class="grade-ref-title">Tabel Konversi Nilai</p>
+      <div class="grade-ref-grid">
+        <span class="grade-badge grade-A">A ≥85</span>
+        <span class="grade-badge grade-A">A- ≥80</span>
+        <span class="grade-badge grade-B">B+ ≥75</span>
+        <span class="grade-badge grade-B">B ≥70</span>
+        <span class="grade-badge grade-B">B- ≥65</span>
+        <span class="grade-badge grade-C">C+ ≥60</span>
+        <span class="grade-badge grade-C">C ≥55</span>
+        <span class="grade-badge grade-C">C- ≥50</span>
+        <span class="grade-badge grade-D">D ≥45</span>
+        <span class="grade-badge grade-E">E &lt;45</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a href="{{ url_for('dosen_nilai') }}" class="btn-secondary">Batal</a>
+      <button type="submit" class="btn-primary">Simpan Nilai</button>
+    </div>
+  </form>
+</div>
+
+<script>
+function angkaToHuruf(n) {
+  if (n >= 85) return 'A';
+  if (n >= 80) return 'A-';
+  if (n >= 75) return 'B+';
+  if (n >= 70) return 'B';
+  if (n >= 65) return 'B-';
+  if (n >= 60) return 'C+';
+  if (n >= 55) return 'C';
+  if (n >= 50) return 'C-';
+  if (n >= 45) return 'D';
+  return 'E';
+}
+function updatePreview() {
+  const v = parseFloat(document.getElementById('nilaiInput').value);
+  const p = document.getElementById('nilaiPreview');
+  if (!isNaN(v) && v >= 0 && v <= 100) {
+    const h = angkaToHuruf(v);
+    p.innerHTML = `Nilai huruf: <span class="grade-badge grade-${h[0]}">${h}</span>`;
+  } else {
+    p.innerHTML = '';
+  }
+}
+</script>
+{% endblock %}

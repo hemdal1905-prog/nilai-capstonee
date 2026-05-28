@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — SiNilai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-body">
+
+<div class="login-split">
+
+  <!-- Left panel -->
+  <div class="login-left">
+    <div class="login-left-inner">
+      <div class="login-brand">
+        <div class="brand-icon large">
+          <svg width="36" height="36" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L26 8V14C26 20.627 20.627 26 14 26C7.373 26 2 20.627 2 14V8L14 2Z" fill="white" fill-opacity="0.25" stroke="white" stroke-width="1.5"/>
+            <path d="M9 14L12.5 17.5L19 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="login-brand-name">SiNilai</span>
+      </div>
+
+      <h1 class="login-headline">Sistem Manajemen<br>Nilai Mahasiswa</h1>
+      <p class="login-desc">Platform terpadu berbasis cloud untuk pengelolaan dan pemantauan nilai akademik secara real-time.</p>
+
+      <div class="login-features">
+        <div class="login-feature">
+          <div class="lf-dot"></div>
+          <span>Input & kelola nilai secara mudah</span>
+        </div>
+        <div class="login-feature">
+          <div class="lf-dot"></div>
+          <span>Pantau perkembangan akademik</span>
+        </div>
+        <div class="login-feature">
+          <div class="lf-dot"></div>
+          <span>Data aman dengan Docker Container</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-deco">
+      <div class="deco-circle c1"></div>
+      <div class="deco-circle c2"></div>
+      <div class="deco-circle c3"></div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="login-right">
+    <div class="login-form-wrap">
+      <h2 class="form-title">Masuk ke Akun</h2>
+      <p class="form-sub">Gunakan kredensial yang diberikan oleh administrator</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }} mb-16">
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" class="form-input" placeholder="Masukkan username" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrapper">
+            <input type="password" name="password" id="passwordField" class="form-input" placeholder="Masukkan password" required>
+            <button type="button" class="toggle-pw" onclick="togglePassword()">
+              <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login">Masuk</button>
+      </form>
+
+      <div class="demo-accounts">
+        <p class="demo-title">Akun Demo</p>
+        <div class="demo-grid">
+          <div class="demo-card" onclick="fillLogin('dosen1','dosen123')">
+            <div class="demo-role dosen">Dosen</div>
+            <div class="demo-cred">dosen1 / dosen123</div>
+          </div>
+          <div class="demo-card" onclick="fillLogin('budi','mhs123')">
+            <div class="demo-role mhs">Mahasiswa</div>
+            <div class="demo-cred">budi / mhs123</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function togglePassword() {
+  const f = document.getElementById('passwordField');
+  f.type = f.type === 'password' ? 'text' : 'password';
+}
+function fillLogin(u, p) {
+  document.querySelector('[name=username]').value = u;
+  document.querySelector('[name=password]').value = p;
+}
+</script>
+</body>
+</html>

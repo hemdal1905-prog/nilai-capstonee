@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Mahasiswa{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="page-eyebrow">Rekap akademik Anda</p>
+    <h1 class="page-title">{{ session.nama }}</h1>
+  </div>
+  <div class="nim-badge">NIM {{ session.nim_nip }}</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card featured">
+    <div class="stat-icon gold">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-value ipk">{{ ipk }}</div>
+      <div class="stat-label">Indeks Prestasi Kumulatif (IPK)</div>
+    </div>
+    <div class="stat-trend {% if ipk >= 3.0 %}up{% else %}neutral{% endif %}">
+      {% if ipk >= 3.5 %}Cum Laude{% elif ipk >= 3.0 %}Sangat Baik{% elif ipk >= 2.5 %}Baik{% else %}Cukup{% endif %}
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon blue">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-value">{{ total_matkul }}</div>
+      <div class="stat-label">Mata Kuliah Ditempuh</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon navy">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-value">{{ total_sks }}</div>
+      <div class="stat-label">Total SKS</div>
+    </div>
+  </div>
+</div>
+
+<!-- Nilai ringkasan -->
+<div class="section-card">
+  <div class="section-card-header">
+    <h2 class="section-card-title">Ringkasan Nilai</h2>
+    <a href="{{ url_for('mahasiswa_transkrip') }}" class="link-all">Lihat Transkrip →</a>
+  </div>
+
+  {% if nilai_list %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Mata Kuliah</th>
+        <th>SKS</th>
+        <th>Nilai</th>
+        <th>Grade</th>
+        <th>Semester</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for n in nilai_list[:8] %}
+      <tr>
+        <td><strong>{{ n.mata_kuliah.nama }}</strong></td>
+        <td class="muted">{{ n.mata_kuliah.sks }}</td>
+        <td><strong>{{ n.nilai_angka }}</strong></td>
+        <td><span class="grade-badge grade-{{ n.nilai_huruf[0] }}">{{ n.nilai_huruf }}</span></td>
+        <td class="muted">{{ n.semester }} {{ n.tahun_ajaran }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if nilai_list|length > 8 %}
+  <div class="table-footer">
+    <a href="{{ url_for('mahasiswa_transkrip') }}" class="link-all">Lihat {{ nilai_list|length - 8 }} nilai lainnya →</a>
+  </div>
+  {% endif %}
+  {% else %}
+  <div class="empty-state">
+    <p>Belum ada nilai yang tersedia. Hubungi dosen Anda.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
